@@ -334,20 +334,7 @@ class BasicLTILaunchViews:
         # If the launch has been configured to focus on the annotations from
         # a particular user, translate that into Hypothesis client configuration.
 
-        if "student_lti_user_id" in self.request.params:
-            # focused_user needs to be an h username (the username part only,
-            # without the acct: and the @lms.hypothes.is) but "student_lti_user_id"
-            # is the LTI user ID.
-            #
-            # The corresponding h username is a hash of the tool_consumer_instance_guid
-            # and the LTI user_id.
-            import hashlib
-            hash_object = hashlib.sha1()
-            hash_object.update(self.request.params["tool_consumer_instance_guid"].encode())
-            hash_object.update(self.request.params["student_lti_user_id"].encode())
-            focused_user = hash_object.hexdigest()[:30]
-        else:
-            focused_user = self.request.params.get("focused_user")
+        focused_user = self.request.params.get("focused_user")
 
         if not focused_user:
             return
