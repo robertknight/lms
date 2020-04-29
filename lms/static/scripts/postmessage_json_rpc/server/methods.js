@@ -14,15 +14,3 @@ export function requestConfig() {
   const clientConfigObj = JSON.parse(configEl.textContent).hypothesisClient;
   return clientConfigObj;
 }
-
-
-var groupsPromise = new Promise(function(resolve, reject) {
-  window.resolveGroupsPromise = resolve;
-});
-
-/**
- * Return the groups for the Hypothesis client to show.
- */
-export async function requestGroups() {
-  return await groupsPromise;
-}

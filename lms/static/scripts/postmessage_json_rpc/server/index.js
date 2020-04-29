@@ -1,5 +1,5 @@
 import Server from './server';
-import { requestConfig, requestGroups } from './methods';
+import { requestConfig } from './methods';
 
 let server = {}; // Singleton RPC server reference
 
@@ -8,8 +8,18 @@ let server = {}; // Singleton RPC server reference
  */
 function startRpcServer() {
   server = new Server();
+
+  const groupsPromise = new Promise((resolve, reject) => {
+    server.resolveGroupFetch = resolve;
+    server.rejectGroupFetch = reject;
+  });
+
+  const requestGroups = () => groupsPromise;
+
   server.register('requestConfig', requestConfig);
   server.register('requestGroups', requestGroups);
+
+  return server;
 }
 
 /**

@@ -1,3 +1,4 @@
+import propTypes from 'prop-types';
 import { Fragment, createElement } from 'preact';
 import {
   useCallback,
@@ -47,7 +48,7 @@ const INITIAL_LTI_LAUNCH_STATE = {
  * the content URL needs to be fetched from a remote source (eg. the LMS's
  * file storage) first, which may require authorization from the user.
  */
-export default function BasicLtiLaunchApp() {
+export default function BasicLtiLaunchApp({ rpcServer }) {
   const {
     api: {
       authToken,
@@ -83,7 +84,7 @@ export default function BasicLtiLaunchApp() {
 
       if (syncApiConfig !== null) {
         const groups = await sync(authToken, syncApiConfig);
-        window.resolveGroupsPromise(groups);
+        rpcServer.resolveGroupsPromise(groups);
       }
 
       if (viaCallbackUrl) {
@@ -119,7 +120,7 @@ export default function BasicLtiLaunchApp() {
         });
       }
     }
-  }, [authToken, syncApiConfig, viaUrl, viaCallbackUrl]);
+  }, [authToken, rpcServer, syncApiConfig, viaUrl, viaCallbackUrl]);
 
   /**
    * Fetch the assignment content URL when the app is initially displayed.
@@ -279,3 +280,7 @@ export default function BasicLtiLaunchApp() {
     </Fragment>
   );
 }
+
+BasicLtiLaunchApp.propTypes = {
+  rpcServer: propTypes.object,
+};
