@@ -1,4 +1,5 @@
-import { createRef, createElement } from 'preact';
+import { createElement } from 'preact';
+import { useRef } from 'preact/hooks';
 import propTypes from 'prop-types';
 
 import Button from './Button';
@@ -9,8 +10,8 @@ import Dialog from './Dialog';
  * PDF file to use for an assignment.
  */
 export default function URLPicker({ onCancel, onSelectURL }) {
-  const input = createRef();
-  const form = createRef();
+  const input = useRef();
+  const form = useRef();
   const submit = event => {
     event.preventDefault();
     if (form.current.checkValidity()) {
