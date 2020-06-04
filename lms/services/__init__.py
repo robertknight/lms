@@ -26,7 +26,7 @@ def includeme(config):
         "lms.services.launch_verifier.LaunchVerifier", name="launch_verifier"
     )
     config.register_service_factory(
-        "lms.services.grading_info.GradingInfoService", name="grading_info",
+        "lms.services.grading_info.GradingInfoService", name="grading_info"
     )
     config.register_service_factory(
         "lms.services.lti_outcomes.LTIOutcomesClient", name="lti_outcomes_client"
@@ -38,4 +38,7 @@ def includeme(config):
     config.register_service_factory("lms.services.oauth1.OAuth1Service", name="oauth1")
     config.register_service_factory(
         "lms.services.course.course_service_factory", name="course"
+    )
+    config.register_service_factory(
+        "lms.services.vitalsource.VitalSourceService", name="vitalsource"
     )

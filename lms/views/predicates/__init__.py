@@ -11,12 +11,14 @@ from lms.views.predicates._lti_launch import (
     Configured,
     DBConfigured,
     URLConfigured,
+    VitalSourceBook,
 )
 
 __all__ = [
     "DBConfigured",
     "CanvasFile",
     "URLConfigured",
+    "VitalSourceBook",
     "Configured",
     "AuthorizedToConfigureAssignments",
 ]
@@ -27,6 +29,7 @@ def includeme(config):
         DBConfigured,
         CanvasFile,
         URLConfigured,
+        VitalSourceBook,
         Configured,
         AuthorizedToConfigureAssignments,
     ):

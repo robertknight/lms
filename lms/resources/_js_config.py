@@ -49,6 +49,17 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
         self._config["viaUrl"] = via_url(self._request, document_url)
         self._add_canvas_speedgrader_settings(document_url=document_url)
 
+    def add_vitalsource_launch_url(self, book_id, cfi=None):
+        vitalsource_svc = self._request.find_service(name="vitalsource")
+        launch_url, launch_params = vitalsource_svc.get_launch_params(
+            book_id, cfi, self._request.lti_user
+        )
+        self._config["vitalSource"] = {
+            "launchUrl": launch_url,
+            "launchParams": launch_params,
+        }
+        # TODO - Add SpeedGrader settings for Canvas.
+
     def asdict(self):
         """
         Return the configuration for the app's JavaScript code.
@@ -200,7 +211,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
                 "lis_outcome_service_url": lis_outcome_service_url,
                 "learner_canvas_user_id": self._request.params["custom_canvas_user_id"],
                 **kwargs,
-            },
+            }
         }
 
     def _auth_token(self):
@@ -259,7 +270,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
             "canvas": {
                 # The URL that the JavaScript code will open if it needs the user to
                 # authorize us to request a new Canvas access token.
-                "authUrl": self._request.route_url("canvas_api.authorize"),
+                "authUrl": self._request.route_url("canvas_api.authorize")
             },
             # Some debug information, currently used in the Gherkin tests.
             "debug": {
@@ -267,7 +278,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
                     "role:instructor"
                     if self._lti_user.is_instructor
                     else "role:learner"
-                ],
+                ]
             },
             # Tell the JavaScript code whether we're in "dev" mode.
             "dev": self._request.registry.settings["dev"],
@@ -282,9 +293,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
             "mode": "basic-lti-launch",
             # The config object for our JSON-RPC server.
             "rpcServer": {
-                "allowedOrigins": self._request.registry.settings[
-                    "rpc_allowed_origins"
-                ],
+                "allowedOrigins": self._request.registry.settings["rpc_allowed_origins"]
             },
         }
 
@@ -388,7 +397,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
                 "lms": {
                     "tool_consumer_instance_guid": req.params[
                         "tool_consumer_instance_guid"
-                    ],
+                    ]
                 },
                 "course": {
                     "context_id": req.params["context_id"],
@@ -404,7 +413,7 @@ class JSConfig:  # pylint:disable=too-many-instance-attributes
 
         if "learner_canvas_user_id" in req.params:
             sync_api_config["data"]["learner"] = {
-                "canvas_user_id": req.params["learner_canvas_user_id"],
+                "canvas_user_id": req.params["learner_canvas_user_id"]
             }
 
         return sync_api_config

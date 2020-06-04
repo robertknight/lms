@@ -10,6 +10,7 @@ class DefaultResource:
         (Allow, "lti_user", "canvas_api"),
         (Allow, "lti_user", "lti_outcomes"),
         (Allow, "lti_user", "sync_api"),
+        (Allow, "lti_user", "vitalsource_api"),
     ]
 
     def __init__(self, request):

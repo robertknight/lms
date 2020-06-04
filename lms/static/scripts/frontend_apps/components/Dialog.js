@@ -1,4 +1,4 @@
-import { createElement } from 'preact';
+import { Fragment, createElement } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
 import propTypes from 'prop-types';
 import classNames from 'classnames';
@@ -29,10 +29,14 @@ export default function Dialog({
   children,
   contentClass,
   initialFocus,
+  onBack,
   onCancel,
   role = 'dialog',
   title,
   buttons,
+  minWidth,
+  minHeight,
+  stretchContent = false,
 }) {
   const dialogTitleId = useUniqueId('dialog');
   const rootEl = useRef();
@@ -57,6 +61,14 @@ export default function Dialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const contentStyle = {};
+  if (minWidth) {
+    contentStyle.minWidth = minWidth;
+  }
+  if (minHeight) {
+    contentStyle.minHeight = minHeight;
+  }
+
   return (
     <div
       role={role}
@@ -70,7 +82,10 @@ export default function Dialog({
         style={{ zIndex: zIndexScale.dialogBackground }}
       />
       <div className="Dialog__container" style={{ zIndex: zIndexScale.dialog }}>
-        <div className={classNames('Dialog__content', contentClass)}>
+        <div
+          className={classNames('Dialog__content', contentClass)}
+          style={contentStyle}
+        >
           <h1 className="Dialog__title" id={dialogTitleId}>
             {title}
             <span className="u-stretch" />
@@ -85,8 +100,14 @@ export default function Dialog({
             )}
           </h1>
           {children}
-          <div className="u-stretch" />
+          {!stretchContent && <div className="u-stretch" />}
           <div className="Dialog__actions">
+            {onBack && (
+              <Fragment>
+                <Button onClick={onBack} label="← Back" />
+                <div className="u-stretch" />
+              </Fragment>
+            )}
             {onCancel && (
               <Button
                 className="Button--cancel"
@@ -137,8 +158,18 @@ Dialog.propTypes = {
   title: propTypes.string,
 
   /**
+   * A callback to go to the previous step in a multi-step dialog. If provided
+   * a "Back" button will be displayed.
+   */
+  onBack: propTypes.func,
+
+  /**
    * A callback to invoke when the user cancels the dialog. If provided,
    * a "Cancel" button will be displayed.
    */
   onCancel: propTypes.func,
+
+  minWidth: propTypes.string,
+  minHeight: propTypes.string,
+  stretchContent: propTypes.bool,
 };

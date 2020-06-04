@@ -19,6 +19,7 @@ import Button from './Button';
 import ErrorDisplay from './ErrorDisplay';
 import LMSGrader from './LMSGrader';
 import Spinner from './Spinner';
+import VitalSourceBookViewer from './VitalSourceBookViewer';
 
 /**
  * @typedef {Object} User
@@ -48,6 +49,7 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
     // Content URL to show in the iframe.
     viaUrl,
     canvas,
+    vitalSource: vitalSourceConfig,
   } = useContext(Config);
 
   // The current state of the error.
@@ -70,7 +72,7 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
   // Show the assignment when the contentUrl has resolved and errorState
   // is falsely
-  const showIframe = contentUrl && !errorState;
+  const showIframe = (contentUrl || vitalSourceConfig) && !errorState;
 
   const showSpinner = fetchCount > 0 && !errorState;
 
@@ -210,7 +212,12 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
   // Construct the <iframe> content
   let iFrameWrapper;
-  const iFrame = (
+  const iFrame = vitalSourceConfig ? (
+    <VitalSourceBookViewer
+      launchUrl={vitalSourceConfig.launchUrl}
+      launchParams={vitalSourceConfig.launchParams}
+    />
+  ) : (
     <iframe
       width="100%"
       height="100%"

@@ -6,6 +6,7 @@ import { Config } from '../config';
 import {
   contentItemForUrl,
   contentItemForLmsFile,
+  contentItemForVitalSourceBook,
 } from '../utils/content-item';
 import {
   GooglePickerClient,
@@ -17,6 +18,7 @@ import ErrorDialog from './ErrorDialog';
 import LMSFilePicker from './LMSFilePicker';
 import Spinner from './Spinner';
 import URLPicker from './URLPicker';
+import VitalSourcePicker from './VitalSourcePicker';
 
 /**
  * An application that allows the user to choose the web page or PDF for an
@@ -42,9 +44,14 @@ export default function FilePickerApp({
     canvas,
   } = useContext(Config);
 
+  // TODO - This should depend on whether we have VS credentials for this
+  // app installation.
+  const vitalSourceEnabled = true;
+
   const [activeDialog, setActiveDialog] = useState(defaultActiveDialog);
   const [url, setUrl] = useState(null);
   const [lmsFile, setLmsFile] = useState(null);
+  const [vitalSourceBook, setVitalSourceBook] = useState(null);
   const [isLoadingIndicatorVisible, setLoadingIndicatorVisible] = useState(
     false
   );
@@ -107,6 +114,14 @@ export default function FilePickerApp({
     }
   };
 
+  const selectVitalSourceBook = (book, chapter) => {
+    setActiveDialog(null);
+    setVitalSourceBook({ book, chapter });
+    submit(true);
+  };
+
+  const showVitalSourcePicker = () => setActiveDialog('vitalsource');
+
   // Submit the form after a selection is made via one of the available
   // methods.
   useEffect(() => {
@@ -134,6 +149,15 @@ export default function FilePickerApp({
         />
       );
       break;
+    case 'vitalsource':
+      dialog = (
+        <VitalSourcePicker
+          authToken={authToken}
+          onCancel={cancelDialog}
+          onSelectBook={selectVitalSourceBook}
+        />
+      );
+      break;
     default:
       dialog = null;
   }
@@ -143,6 +167,8 @@ export default function FilePickerApp({
     contentItem = contentItemForUrl(ltiLaunchUrl, url);
   } else if (lmsFile) {
     contentItem = contentItemForLmsFile(ltiLaunchUrl, lmsFile);
+  } else if (vitalSourceBook) {
+    contentItem = contentItemForVitalSourceBook(ltiLaunchUrl, vitalSourceBook);
   }
   contentItem = JSON.stringify(contentItem);
 
@@ -188,6 +214,13 @@ export default function FilePickerApp({
               className="FilePickerApp__source-button"
               label="Select PDF from Google Drive"
               onClick={showGooglePicker}
+            />
+          )}
+          {vitalSourceEnabled && (
+            <Button
+              className="FilePickerApp__source-button"
+              label="Select book from VitalSource"
+              onClick={showVitalSourcePicker}
             />
           )}
         </div>

@@ -6,6 +6,7 @@ __all__ = [
     "DBConfigured",
     "CanvasFile",
     "URLConfigured",
+    "VitalSourceBook",
     "Configured",
     "AuthorizedToConfigureAssignments",
 ]
@@ -70,6 +71,13 @@ class CanvasFile(Base):
         return ("canvas_file" in request.params) == self.value
 
 
+class VitalSourceBook(Base):
+    name = "vitalsource_book"
+
+    def __call__(self, context, request):
+        return ("vitalsource_book" in request.params) == self.value
+
+
 class URLConfigured(Base):
     """
     Allow invoking an LTI launch view only for URL-configured assignments.
@@ -121,15 +129,17 @@ class Configured(Base):
     def __init__(self, value, config):
         super().__init__(value, config)
         self.canvas_file = CanvasFile(True, config)
-        self.url_configured = URLConfigured(True, config)
         self.db_configured = DBConfigured(True, config)
+        self.url_configured = URLConfigured(True, config)
+        self.vitalsource_book = VitalSourceBook(True, config)
 
     def __call__(self, context, request):
         configured = any(
             [
                 self.canvas_file(context, request),
-                self.url_configured(context, request),
                 self.db_configured(context, request),
+                self.url_configured(context, request),
+                self.vitalsource_book(context, request),
             ]
         )
         return configured == self.value

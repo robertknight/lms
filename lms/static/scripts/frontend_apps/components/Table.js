@@ -3,6 +3,8 @@ import { createElement } from 'preact';
 import { useRef } from 'preact/hooks';
 import propTypes from 'prop-types';
 
+import Spinner from './Spinner';
+
 /**
  * Return the next item to select when advancing the selection by `step` items
  * forwards (if positive) or backwards (if negative).
@@ -30,6 +32,7 @@ function nextItem(items, currentItem, step) {
 export default function Table({
   accessibleLabel,
   columns,
+  contentLoading,
   items,
   onSelectItem,
   onUseItem,
@@ -66,7 +69,7 @@ export default function Table({
   };
 
   return (
-    <div className="Table__wrapper">
+    <div className="Table__viewport">
       <table
         aria-label={accessibleLabel}
         className="Table__table"
@@ -107,6 +110,11 @@ export default function Table({
           ))}
         </tbody>
       </table>
+      {contentLoading && (
+        <div className="Table__spinner">
+          <Spinner />
+        </div>
+      )}
     </div>
   );
 }
@@ -157,4 +165,7 @@ Table.propTypes = {
    * or pressing Enter while it is selected.
    */
   onUseItem: propTypes.func,
+
+  /** Whether to show a loading spinner in place of the content. */
+  contentLoading: propTypes.bool,
 };
