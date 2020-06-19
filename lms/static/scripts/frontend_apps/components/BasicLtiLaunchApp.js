@@ -76,7 +76,6 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
   const incFetchCount = () => {
     setFetchCount(count => count + 1);
-    setErrorState(null);
   };
 
   const decFetchCount = () => {
@@ -91,60 +90,68 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
    *  "error-authorizing", or "error-report-submission"
    * @param {boolean} [retry=true] - Can the request be retried?
    */
-  const handleError = (e, newErrorState, retry = true) => {
+  const handleError = useCallback((e, newErrorState, retry = true) => {
     if (e instanceof ApiError && !e.errorMessage && retry) {
       setErrorState('error-authorizing');
     } else {
       setError(e);
       setErrorState(newErrorState);
     }
-  };
+  }, []);
 
   /**
    * Fetch the groups from the sync endpoint if `sync` object exists.
+   *
+   * @return {boolean} - true if an error occurred, false otherwise
    */
   const fetchGroups = useCallback(async () => {
     if (apiSync) {
       try {
-        setErrorState(null);
         const groups = await apiCall({
           authToken,
           path: apiSync.path,
           data: apiSync.data,
         });
         rpcServer.resolveGroupFetch(groups);
+        return false;
       } catch (e) {
         handleError(e, 'error-fetch');
+        return true;
       }
     }
-  }, [apiSync, authToken, rpcServer]);
+    return false;
+  }, [apiSync, authToken, handleError, rpcServer]);
 
   /**
    * Fetch the URL of the content to display in the iframe if `viaCallbackUrl`
    * exists.
    *
    * This will typically be a PDF URL proxied through Via.
+   *
+   * @return {boolean} - true if an error occurred, false otherwise
    */
   const fetchContentUrl = useCallback(async () => {
     if (!viaCallbackUrl) {
       // If no "callback" URL was supplied for the frontend to use to fetch
       // the URL, then the backend must have provided the Via URL in the
       // initial request, which we'll just use directly.
-      return;
+      return false;
     }
     try {
       incFetchCount();
       const { via_url: contentUrl } = await apiCall({
-        authToken,
+        authToken: authToken,
         path: viaCallbackUrl,
       });
       setContentUrl(contentUrl);
-    } catch (e) {
-      handleError(e, 'error-fetch');
-    } finally {
       decFetchCount();
+      return false;
+    } catch (e) {
+      decFetchCount();
+      handleError(e, 'error-fetch');
+      return true;
     }
-  }, [authToken, viaCallbackUrl]);
+  }, [authToken, handleError, viaCallbackUrl]);
 
   /**
    * Fetch the assignment content URL and groups when the app is initially displayed.
@@ -183,7 +190,7 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
       // submission.
       handleError(e, 'error-report-submission', false);
     }
-  }, [authToken, canvas.speedGrader, contentUrl]);
+  }, [authToken, canvas.speedGrader, contentUrl, handleError]);
 
   useEffect(reportSubmission, [reportSubmission]);
 
@@ -202,7 +209,33 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
     try {
       await authWindow.current.authorize();
-      await Promise.all([fetchContentUrl(), fetchGroups()]);
+      // In the re-try case, block only the contentUrl request. At
+      // the time is succeeds, then check the return value of the groups
+      // request. There are two possible cases:
+      //
+      // 1. Groups did finish.
+      //   If the groups request errors, then don't reset
+      //   the the errorState as that may cause a flickering.
+      //
+      // 2. Groups did not finish.
+      //   Just allow the group to finish on its own and it will
+      //   take care of setting any new error, We can't prevent
+      //   the UI from jumping around at that point because we
+      //   don't block on the groups request in the first place.
+      let groupError = false;
+      fetchGroups().then(error => {
+        // This may or may not resolve before fetchContentUrl.
+        // We only care if it resolves first AND if an error code
+        // was returned
+        groupError = error;
+      });
+      if (!(await fetchContentUrl())) {
+        // Clear out an old error if no new error occurs.
+        if (!groupError) {
+          // Okay to clear the error state
+          setErrorState(null);
+        }
+      }
     } finally {
       authWindow.current = null;
     }
