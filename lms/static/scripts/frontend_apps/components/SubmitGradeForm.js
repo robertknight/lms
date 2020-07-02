@@ -7,7 +7,7 @@ import {
   useState,
   useRef,
 } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import { Config } from '../config';
 import ErrorDialog from './ErrorDialog';

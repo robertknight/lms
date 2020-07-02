@@ -1,5 +1,5 @@
 import { createElement } from 'preact';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import SvgIcon from './SvgIcon';
 import { trustMarkup } from '../utils/trusted';

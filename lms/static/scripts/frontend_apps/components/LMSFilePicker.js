@@ -1,6 +1,6 @@
 import { Fragment, createElement } from 'preact';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import { ApiError, listFiles } from '../utils/api';
 

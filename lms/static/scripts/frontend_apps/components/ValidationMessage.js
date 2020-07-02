@@ -1,7 +1,7 @@
 import { createElement } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import classNames from 'classnames';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 /**
  * Shows a single validation error message that can be open or closed.

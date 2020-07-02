@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { createElement } from 'preact';
 import { useRef } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 /**
  * Return the next item to select when advancing the selection by `step` items

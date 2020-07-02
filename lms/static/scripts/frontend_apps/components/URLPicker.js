@@ -1,5 +1,5 @@
 import { createRef, createElement } from 'preact';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import Button from './Button';
 import Dialog from './Dialog';

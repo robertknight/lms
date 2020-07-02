@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { Fragment, createElement } from 'preact';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import {
   useCallback,

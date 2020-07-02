@@ -1,4 +1,4 @@
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 import { createElement } from 'preact';
 
 function emailLink({ address, subject = '', body = '' }) {

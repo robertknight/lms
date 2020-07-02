@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { createElement } from 'preact';
 import { useLayoutEffect, useRef } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 /**
  * Component that renders icons using inline `<svg>` elements.

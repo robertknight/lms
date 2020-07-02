@@ -1,5 +1,5 @@
 import { createElement } from 'preact';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
 import { call as rpcCall } from '../../postmessage_json_rpc/client';

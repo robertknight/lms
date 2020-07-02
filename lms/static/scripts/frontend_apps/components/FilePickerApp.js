@@ -1,6 +1,6 @@
 import { createElement } from 'preact';
 import { useContext, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import { Config } from '../config';
 import {

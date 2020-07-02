@@ -1,6 +1,6 @@
 import { createElement } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 import classNames from 'classnames';
 
 import Button from './Button';

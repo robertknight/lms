@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { Fragment, createElement } from 'preact';
-import propTypes from 'prop-types';
+import * as propTypes from 'prop-types';
 
 import Spinner from './Spinner';
 import Table from './Table';
