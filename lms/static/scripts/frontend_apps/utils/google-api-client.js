@@ -1,19 +1,28 @@
 /**
+ * Global variables created by the Google API loader script.
+ *
+ * @typedef GoogleAPIGlobals
+ * @prop {Object} [gapi]
+ */
+
+/**
  * Load the Google API loader script (`window.gapi`), if not already loaded.
  */
 async function loadGAPI() {
-  if (window.gapi) {
-    return window.gapi;
+  const window_ = /** @type {Window & GoogleAPIGlobals} */ (window);
+
+  if (window_.gapi) {
+    return window_.gapi;
   }
 
   return new Promise((resolve, reject) => {
     const gapiScript = document.createElement('script');
     gapiScript.src = 'https://apis.google.com/js/api.js';
     gapiScript.onload = () => {
-      resolve(window.gapi);
+      resolve(window_.gapi);
     };
-    gapiScript.onerror = ({ error }) => {
-      reject(error);
+    gapiScript.onerror = () => {
+      reject(new Error('Failed to load Google API'));
     };
     document.body.appendChild(gapiScript);
   });
