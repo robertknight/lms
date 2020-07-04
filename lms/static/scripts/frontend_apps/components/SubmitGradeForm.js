@@ -101,7 +101,7 @@ export default function SubmitGradeForm({ disabled = false, student }) {
   } = useContext(Config);
 
   // Used to handle keyboard input changes for the grade input field.
-  const inputRef = useRef(null);
+  const inputRef = useRef(/** @type {HTMLInputElement|null} */ (null));
 
   // Clear the previous grade saved status when the user changes.
   useEffect(() => {
@@ -129,7 +129,7 @@ export default function SubmitGradeForm({ disabled = false, student }) {
       try {
         await submitGrade({
           student,
-          grade: value / GRADE_MULTIPLIER,
+          grade: Number(value) / GRADE_MULTIPLIER,
           authToken,
         });
         setGradeSaved(true);
@@ -173,6 +173,7 @@ export default function SubmitGradeForm({ disabled = false, student }) {
           ref={inputRef}
           onInput={handleKeyDown}
           type="input"
+          // @ts-ignore - `defaultValue` prop is valid but missing in type definitions.
           defaultValue={grade}
           key={student.LISResultSourcedId}
         />
@@ -191,6 +192,7 @@ export default function SubmitGradeForm({ disabled = false, student }) {
       >
         <SvgIcon
           className="SubmitGradeForm__check-icon"
+          // @ts-ignore
           src={trustMarkup(require('../../../images/check.svg'))}
           inline={true}
         />{' '}

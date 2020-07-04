@@ -47,7 +47,9 @@ export default function LMSFilePicker({
 
   // `AuthWindow` instance, set only when waiting for the user to approve
   // the app's access to the user's files in the LMS.
-  const authWindow = useRef(null);
+  const authWindow = /** @type {import("preact/hooks").Ref<AuthWindow|null>} */ (useRef(
+    null
+  ));
 
   // Fetches files or shows a prompt to authorize access.
   const fetchFiles = useCallback(async () => {

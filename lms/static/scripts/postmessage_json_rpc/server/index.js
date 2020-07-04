@@ -1,6 +1,6 @@
 import Server from './server';
 
-let server = {}; // Singleton RPC server reference
+let server; // Singleton RPC server reference
 
 /**
  * Create a new RPC server and register any methods it will support.
@@ -24,8 +24,12 @@ function startRpcServer() {
    * @returns {Object} - A Hypothesis client config object for the current LTI request.
    */
   server.register('requestConfig', () => {
-    const configEl = document.querySelector('.js-config');
-    const clientConfigObj = JSON.parse(configEl.textContent).hypothesisClient;
+    const configEl = /** @type {HTMLElement} */ (document.querySelector(
+      '.js-config'
+    ));
+    const clientConfigObj = JSON.parse(
+      /** @type {string} */ (configEl.textContent)
+    ).hypothesisClient;
     return clientConfigObj;
   });
 

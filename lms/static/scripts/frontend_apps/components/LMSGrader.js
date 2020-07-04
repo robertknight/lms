@@ -51,16 +51,19 @@ export default function LMSGrader({
   /**
    * Makes an RPC call to the sidebar to change to the focused user.
    *
-   * @param {User} user - The user to focus on in the sidebar
+   * @param {User|null} user - The user to focus on in the sidebar
    */
   const changeFocusedUser = async user => {
+    const username = user ? user.userid : null;
+    const displayName = user ? user.displayName : null;
+
     const sidebar = await getSidebarWindow();
     // Calls the client sidebar to fire the `changeFocusModeUser` action
     // to change the focused user.
     rpcCall(sidebar.frame, sidebar.origin, 'changeFocusModeUser', [
       {
-        username: user.userid, // change `username` key to `userid` once the client is ready
-        displayName: user.displayName,
+        username,
+        displayName,
       },
     ]);
   };
@@ -69,7 +72,7 @@ export default function LMSGrader({
     if (students[currentStudentIndex]) {
       changeFocusedUser(students[currentStudentIndex]);
     } else {
-      changeFocusedUser({}); // any non-real userid will clear out a previously focused user
+      changeFocusedUser(null);
     }
   }, [students, currentStudentIndex]);
 

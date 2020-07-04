@@ -12,8 +12,11 @@ import { startRpcServer } from '../postmessage_json_rpc/server';
 // Create an RPC Server and start listening to postMessage calls.
 const rpcServer = startRpcServer();
 
-const rootEl = document.querySelector('#app');
-const config = JSON.parse(document.querySelector('.js-config').textContent);
+const rootEl = /** @type {HTMLElement} */ (document.querySelector('#app'));
+const configEl = /** @type {HTMLElement} */ (document.querySelector(
+  '.js-config'
+));
+const config = JSON.parse(/** @type {string} */ (configEl.textContent));
 
 render(
   <Config.Provider value={config}>

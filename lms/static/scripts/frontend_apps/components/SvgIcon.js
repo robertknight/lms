@@ -22,11 +22,13 @@ export default function SvgIcon({ className = '', inline = false, src }) {
   }
 
   const markup = { __html: src.trustedHTML };
-  const element = useRef();
+  const element = useRef(/** @type {HTMLSpanElement|null} */ (null));
 
   useLayoutEffect(() => {
     const svg = element.current.querySelector('svg');
-    svg.setAttribute('class', className);
+    if (svg) {
+      svg.setAttribute('class', className);
+    }
   }, [
     className,
     // `markup` is a dependency of this effect because the SVG is replaced if

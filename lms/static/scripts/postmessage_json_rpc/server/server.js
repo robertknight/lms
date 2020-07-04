@@ -23,7 +23,7 @@
 export default class Server {
   constructor() {
     const configEl = document.getElementsByClassName('js-config')[0];
-    const configObj = JSON.parse(configEl.textContent).rpcServer;
+    const configObj = JSON.parse(configEl.textContent || '{}').rpcServer;
 
     // JSON-RPC messages that don't come from one of these allowed window
     // origins will be ignored.

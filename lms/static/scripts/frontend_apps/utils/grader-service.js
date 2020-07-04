@@ -47,4 +47,5 @@ function fetchGrade({ student, authToken }) {
     path: `/api/lti/result?lis_result_sourcedid=${student.LISResultSourcedId}&lis_outcome_service_url=${student.LISOutcomeServiceUrl}`,
   });
 }
+
 export { fetchGrade, submitGrade };

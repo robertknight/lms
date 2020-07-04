@@ -52,10 +52,12 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
   // The current state of the error.
   // One of "error-fetch", "error-authorizing", or "error-report-submission" or null
-  const [errorState, setErrorState] = useState(null);
+  const [errorState, setErrorState] = useState(
+    /** @type {string|null} */ (null)
+  );
 
   // Any current error thrown.
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(/** @type {Error|null} */ (null));
 
   // When the app is initially displayed, it will use the Via URL if given
   // or invoke the API callback to fetch the URL otherwise.
@@ -66,7 +68,9 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
 
   // `AuthWindow` instance, set only when waiting for the user to approve
   // the app's access to the user's files in the LMS.
-  const authWindow = useRef(null);
+  const authWindow = /** @type {import("preact/hooks").Ref<AuthWindow|null>} */ (useRef(
+    null
+  ));
 
   // Show the assignment when the contentUrl has resolved and errorState
   // is falsely
@@ -185,7 +189,9 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
     }
   }, [authToken, canvas.speedGrader, contentUrl]);
 
-  useEffect(reportSubmission, [reportSubmission]);
+  useEffect(() => {
+    reportSubmission();
+  }, [reportSubmission]);
 
   /**
    * Request the user's authorization to access the content, then try fetching
@@ -215,7 +221,7 @@ export default function BasicLtiLaunchApp({ rpcServer }) {
       width="100%"
       height="100%"
       className="js-via-iframe"
-      src={contentUrl}
+      src={contentUrl || undefined}
       title="Course content with Hypothesis annotation viewer"
     />
   );

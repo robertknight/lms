@@ -83,7 +83,9 @@ async function call(
   try {
     return await Promise.race([response, timeoutExpired]);
   } finally {
-    window_.removeEventListener('message', listener);
+    if (listener) {
+      window_.removeEventListener('message', listener);
+    }
   }
 }
 

@@ -24,9 +24,9 @@ import URLPicker from './URLPicker';
  */
 export default function FilePickerApp({
   defaultActiveDialog = null,
-  onSubmit,
+  onSubmit = undefined,
 }) {
-  const formEl = useRef();
+  const formEl = useRef(/** @type {HTMLFormElement|null} */ (null));
   const {
     api: { authToken },
     filePicker: {
@@ -43,12 +43,20 @@ export default function FilePickerApp({
   } = useContext(Config);
 
   const [activeDialog, setActiveDialog] = useState(defaultActiveDialog);
-  const [url, setUrl] = useState(null);
+  const [url, setUrl] = useState(/** @type {string|null} */ (null));
   const [lmsFile, setLmsFile] = useState(null);
   const [isLoadingIndicatorVisible, setLoadingIndicatorVisible] = useState(
     false
   );
-  const [errorInfo, setErrorInfo] = useState(null);
+
+  /**
+   * @typedef ErrorInfo
+   * @prop {string} title
+   * @prop {Error} error
+   */
+  const [errorInfo, setErrorInfo] = useState(
+    /** @type {ErrorInfo|null} */ (null)
+  );
 
   // Initialize the Google Picker client if credentials have been provided.
   // We do this eagerly to make the picker load faster if the user does click
@@ -89,10 +97,14 @@ export default function FilePickerApp({
   };
 
   const showGooglePicker = async () => {
+    // The option to show the Google picker is only shown if the necessary config
+    // was available.
+    const picker = /** @type {GooglePickerClient} */ (googlePicker);
+
     try {
       setLoadingIndicatorVisible(true);
-      const { id, url } = await googlePicker.showPicker();
-      await googlePicker.enablePublicViewing(id);
+      const { id, url } = await picker.showPicker();
+      await picker.enablePublicViewing(id);
       setUrl(url);
       submit(true);
     } catch (error) {
@@ -114,7 +126,10 @@ export default function FilePickerApp({
       // Submit form using a hidden button rather than calling `form.submit()`
       // to facilitate observing the submission in tests and suppressing the
       // actual submit.
-      formEl.current.querySelector('input[type="submit"]').click();
+      const submitBtn = /** @type {HTMLElement} */ (formEl.current.querySelector(
+        'input[type="submit"]'
+      ));
+      submitBtn.click();
     }
   }, [shouldSubmit]);
 
@@ -169,7 +184,7 @@ export default function FilePickerApp({
           You can select content for your assignment from one of the following
           sources:
         </p>
-        <input name="document_url" type="hidden" value={url} />
+        <input name="document_url" type="hidden" value={url || ''} />
         <div className="FilePickerApp__document-source-buttons">
           <Button
             className="FilePickerApp__source-button"

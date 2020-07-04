@@ -59,8 +59,8 @@ export default function StudentSelector({
 
     return (
       <span className="StudentsSelector__students">
-        {/* 
-        This lint issue may have arisen from browser inconsistency issues with 
+        {/*
+        This lint issue may have arisen from browser inconsistency issues with
         `onChange` which have since been fixed. See browser compatibility note here:
         https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event#annotations:xeC6ClQsEequhUdih2lXzw
         */}
@@ -68,13 +68,15 @@ export default function StudentSelector({
         <select
           className="StudentsSelector__students-select"
           onChange={e => {
-            onSelectStudent(parseInt(e.target.value));
+            const element = /** @type {HTMLSelectElement} */ (e.target);
+            onSelectStudent(parseInt(element.value));
           }}
         >
           {options}
         </select>
         <SvgIcon
           className="StudentsSelector__students-icon"
+          // @ts-ignore
           src={trustMarkup(require('../../../images/caret-down.svg'))}
           inline={true}
         />{' '}
@@ -92,6 +94,7 @@ export default function StudentSelector({
       >
         <SvgIcon
           className="StudentSelector-change-student-svg"
+          // @ts-ignore
           src={trustMarkup(require('../../../images/arrow-left.svg'))}
           inline={true}
         />
@@ -105,6 +108,7 @@ export default function StudentSelector({
       >
         <SvgIcon
           className="StudentSelector-change-student-svg"
+          // @ts-ignore
           src={trustMarkup(require('../../../images/arrow-right.svg'))}
           inline={true}
         />

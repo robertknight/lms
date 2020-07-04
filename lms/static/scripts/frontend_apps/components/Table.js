@@ -36,7 +36,7 @@ export default function Table({
   renderItem,
   selectedItem,
 }) {
-  const rowRefs = useRef([]);
+  const rowRefs = useRef(/** @type {Array<HTMLElement|null>} */ ([]));
 
   const focusAndSelectItem = item => {
     const itemIndex = items.indexOf(item);
